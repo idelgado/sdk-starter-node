@@ -117,7 +117,8 @@ var client = new Twilio(process.env.TWILIO_API_KEY,  process.env.TWILIO_API_SECR
     "endpoint": request.body.endpoint,
     "identity": request.body.identity,
     "bindingType": request.body.BindingType,
-    "address": request.body.Address
+    "address": request.body.Address,
+    "tag": request.body.Tag
   }).then(function(binding) {
     var message = 'Binding created!';
     console.log(binding);
@@ -146,10 +147,12 @@ app.post('/send-notification', function(request, response) {
   // Create a reference to the user notification service
   var service = client.notify.v1.services(process.env.TWILIO_NOTIFICATION_SERVICE_SID);
 
+  // TODO: add support for identity
   // Send a notification 
   service.notifications.create({
-    'identity':'' + request.body.identity,
-    'body':'Hello, ' + request.body.identity + '!'
+    'title':'' + request.body.title,
+    'body':'' + request.body.body,
+    'tag' : request.body.tag
   }).then(function(message) {
     console.log(message);
     response.send({
