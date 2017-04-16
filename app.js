@@ -50,12 +50,23 @@ app.get('/config', function(request, response) {
 });
 
 /*
+Generate an Access Token for an application user - generate a token
+based on the identity provided in the body
+*/
+app.post('/token', function(request, response) {
+    generateTokenResponse(request.body.identity, response);
+});
+
+/*
 Generate an Access Token for an application user - it generates a random
 username for the client requesting a token, and takes a device ID as a query
 parameter.
 */
 app.get('/token', function(request, response) {
-    
+    generateTokenResponse(randomUsername(), response);
+});
+
+function generateTokenResponse(identity, response) {
     // Create an access token which we will sign and return to the client
     var token = new AccessToken(
         process.env.TWILIO_ACCOUNT_SID,
@@ -63,8 +74,8 @@ app.get('/token', function(request, response) {
         process.env.TWILIO_API_SECRET
     );
 
-    // Assign the generated identity to the token
-    token.identity = randomUsername();
+    // Set the identity of the token
+    token.identity = identity;
 
     //grant the access token Twilio Video capabilities
     if (process.env.TWILIO_CONFIGURATION_SID) {
@@ -101,8 +112,7 @@ app.get('/token', function(request, response) {
         identity: token.identity,
         token: token.toJwt()
     });
-});
-
+};
 
 // Notify - create a device binding from a POST HTTP request
 app.post('/register', function(request, response) {
