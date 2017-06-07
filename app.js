@@ -162,6 +162,7 @@ app.post('/send-notification', function(request, response) {
   service.notifications.create({
     'title':'' + request.body.title,
     'body':'' + request.body.body,
+    'data':'' + request.body.data,
     'tag' : request.body.tag
   }).then(function(message) {
     console.log(message);
